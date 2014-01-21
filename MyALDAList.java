@@ -1,42 +1,22 @@
 import java.util.Iterator;
 
 /**
- * Created by Happyjuiced on 2014-01-21.
+ * Created by Daniel van den Berg and Eleni...fan ska man komma ihåg det i huvet? on 2014-01-21.
+ *Starten är direkt kopierad från föreläsning ett (first,last,add metoden och den inre node klassen.
  */
-public class MyALDAList<T> implements ALDAList<String> {
-    @Override
-    public void add(String element) {
-
-    }
+public class MyALDAList<T> implements ALDAList<T> {
+    private Node first;
+    private Node last;
 
     @Override
-    public void add(int index, String element) {
-
-    }
-
-    @Override
-    public String remove(int index) {
-        return null;
-    }
-
-    @Override
-    public boolean remove(String element) {
-        return false;
-    }
-
-    @Override
-    public String get(int index) {
-        return null;
-    }
-
-    @Override
-    public boolean contains(String element) {
-        return false;
-    }
-
-    @Override
-    public int indexOf(String element) {
-        return 0;
+    public void add(T data) {
+        if(first==null){
+            first = new Node<T>(data);
+            last = first;
+        }else{
+            last.next = new Node<T>(data);
+            last = last.next;
+        }
     }
 
     @Override
@@ -49,13 +29,57 @@ public class MyALDAList<T> implements ALDAList<String> {
         return 0;
     }
 
+
+
+    @Override
+    public void add(int index, T element) {
+
+    }
+
+    @Override
+    public T remove(int index) {
+        return null;
+    }
+
+    @Override
+    public boolean remove(T element) {
+        return false;
+    }
+
+    @Override
+    public T get(int index) {
+        return null;
+    }
+
+    @Override
+    public boolean contains(T element) {
+        return false;
+    }
+
+    @Override
+    public int indexOf(T element) {
+        return 0;
+    }
+
     /**
      * Returns an iterator over a set of elements of type T.
      *
      * @return an Iterator.
      */
     @Override
-    public Iterator<String> iterator() {
+    public Iterator<T> iterator() {
         return null;
+    }
+
+    /*
+           copied from lecture one example
+        */
+    private static class Node<T>{
+        T data;
+        Node next;
+
+        private Node(T data) {
+            this.data = data;
+        }
     }
 }
