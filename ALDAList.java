@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /**
  * Detta �r listinterfacet ni ska implementera. Det �r en f�renklad version av
  * det som finns i java.util.List d�r ni hittar dokumentationen av de metoderna.
@@ -17,7 +19,7 @@ public interface ALDAList<E> extends Iterable<E> {
 
 //	public boolean remove(E element);
 
-//	public E get(int index);
+	public E get(int index);
 
 //	public boolean contains(E element);
 
@@ -27,4 +29,6 @@ public interface ALDAList<E> extends Iterable<E> {
 
 	public int size();
 
+    @Override
+    Iterator<E> iterator();
 }
