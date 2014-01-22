@@ -4,7 +4,7 @@
  * Observera dock att remove(element) och contains(element) h�r tar en parameter
  * av typen E och inte Object, och att List i orginal returnerar en boolean
  * vilket vi struntar i.
- * 
+ *
  * @author Henrik
  */
 public interface ALDAList<E> extends Iterable<E> {
@@ -13,15 +13,15 @@ public interface ALDAList<E> extends Iterable<E> {
 
 	public void add(int index, E element);
 
-	public E remove(int index);
+//	public E remove(int index);
 
-	public boolean remove(E element);
+//	public boolean remove(E element);
 
-	public E get(int index);
+//	public E get(int index);
 
-	public boolean contains(E element);
+//	public boolean contains(E element);
 
-	public int indexOf(E element);
+//	public int indexOf(E element);
 
 	public void clear();
 
