@@ -143,7 +143,50 @@ public class MyALDAList<T> implements ALDAList<T> {
     @Override
     public boolean contains(T element) {
         //-todo den här är next in line
+        for (int i = 0; i < size ; i++) {
+            T current = get(i);
+            //dubbelkoll för att om möjligt slippa dyrare equals metod
+            if(current == element || current.equals(element))
+                return true;//hittade elementet så skippa resten av iterationen
+        }
         return false;
+    }
+
+    @Override
+    public int indexOf(T element) {
+        for (int i = 0; i < size; i++) {
+            T current = get(i);
+            //dubbelkoll för att om möjligt slippa dyrare equals metod
+            if(current == element || current.equals(element))
+                return i;
+        }
+        //finns inte men vi måste returnera något och eftersom alla positiva tal kan vara ett index så
+        return -1;
+    }
+
+    @Override
+    public T remove(int index) {
+       //den  vi ska ta bort
+        Node remove = getNode(index);
+        //hämta det borttagna objektet
+        T data = (T) remove.data;
+
+        //fall med index ==0
+        if (index == 0) {
+            //korrigera pekarna
+            first = remove.next;
+            lead.next = first;
+        }else{
+            //hämta den innan
+            Node before= getNode(index-1);
+            //fyll hålrummet, t.ex index om (int index) som skickas med är == 5 pekar node 4 nu på 6 istället
+            before.next = remove.next;
+            //det borttagna ska inte peka någonstans
+            remove.next = null;
+        }
+        //lägger den efter vi kunnat hämta elementet, men innan index == 0 för att vår early exit ska funka
+        size--;
+        return data;
     }
 
     @Override
@@ -152,48 +195,28 @@ public class MyALDAList<T> implements ALDAList<T> {
     }
     private class ListIterator<T> implements Iterator<T>{
         /*
-        * Aautogenererade skalmetoder och engelska kommentarer från javadoc via editorn
+        * Aautogenererade skalmetoder via editorn
         * Koden i metodernas body och på svenska är vårt eget
         */
 
-         /**
-         * Returns {@code true} if the iteration has more elements.
-         * (In other words, returns {@code true} if {@link #next} would
-         * return an element rather than throwing an exception.)
-         *
-         * @return {@code true} if the iteration has more elements
-         */
         @Override
         public boolean hasNext() {
-            return false;
+            boolean hasNext = true;
+            for (int i = 0; i < size ; i++) {
+                if(getNode(i).next==end){
+                    hasNext= false;
+                    //lite onödigt men vi slipper en check iaf(att i passerat size)
+                    break;
+                }
+            }
+            return hasNext;
         }
 
-        /**
-         * Returns the next element in the iteration.
-         *
-         * @return the next element in the iteration
-         * @throws NoSuchElementException if the iteration has no more elements
-         */
         @Override
         public T next() {
             return null;
         }
 
-        /**
-         * Removes from the underlying collection the last element returned
-         * by this iterator (optional operation).  This method can be called
-         * only once per call to {@link #next}.  The behavior of an iterator
-         * is unspecified if the underlying collection is modified while the
-         * iteration is in progress in any way other than by calling this
-         * method.
-         *
-         * @throws UnsupportedOperationException if the {@code remove}
-         *                                       operation is not supported by this iterator
-         * @throws IllegalStateException         if the {@code next} method has not
-         *                                       yet been called, or the {@code remove} method has already
-         *                                       been called after the last call to the {@code next}
-         *                                       method
-         */
         @Override
         public void remove() {
 

@@ -136,32 +136,32 @@ public class ALDAListTest {
 	    assertFalse(list.contains("ABC"));
 	    assertFalse(list.contains(""));
 	}
-	//
-	// @Test
-	// public void testIndexOf() {
-	// assertEquals(0, list.indexOf("First"));
-	// assertEquals(4, list.indexOf("Fifth"));
-	// assertEquals(-1, list.indexOf("ABC"));
-	// list.add("Second");
-	// assertEquals(1, list.indexOf("Second"));
-	// }
-	//
-	// @Test
-	// public void testRemoveWithIndex() {
-	// list.remove(2);
-	// assertEquals(4, list.size());
-	// assertEquals("Second", list.get(1));
-	// assertEquals("Fourth", list.get(2));
-	//
-	// list.remove(0);
-	// assertEquals(3, list.size());
-	// assertEquals("Second", list.get(0));
-	//
-	// list.remove(2);
-	// assertEquals(2, list.size());
-	// assertEquals("Fourth", list.get(1));
-	// }
-	//
+
+	@Test
+	public void testIndexOf() {
+        assertEquals(0, list.indexOf("First"));
+        assertEquals(4, list.indexOf("Fifth"));
+        assertEquals(-1, list.indexOf("ABC"));
+        list.add("Second");
+        assertEquals(1, list.indexOf("Second"));
+	}
+
+	@Test
+	public void testRemoveWithIndex() {
+        list.remove(2);
+        assertEquals(4, list.size());
+        assertEquals("Second", list.get(1));
+        assertEquals("Fourth", list.get(2));
+
+        list.remove(0);
+        assertEquals(3, list.size());
+        assertEquals("Second", list.get(0));
+
+        list.remove(2);
+        assertEquals(2, list.size());
+        assertEquals("Fourth", list.get(1));
+    }
+
 	// @Test(expected = IndexOutOfBoundsException.class)
 	// public void testRemoveIndexBelowZero() {
 	// list.remove(-1);
