@@ -21,7 +21,7 @@ public interface ALDAList<E> extends Iterable<E> {
 
 	public E get(int index);
 
-//	public boolean contains(E element);
+	public boolean contains(E element);
 
 //	public int indexOf(E element);
 

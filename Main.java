@@ -1,6 +1,13 @@
+import java.util.Iterator;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.print("haha");
+        MyALDAList<String> list = new MyALDAList<String>();
+        try{
+            Iterator<String> it = list.iterator();
+        }catch(Exception e ){
+            e.printStackTrace();
+        }
     }
 }

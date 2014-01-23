@@ -98,47 +98,44 @@ public class ALDAListTest {
 	@Test
 	public void addWithIndex() {
 	    list.add(0, "A");
-//	    list.add(1, "AAAA");
-//        System.out.println(list.get(1));
-//        System.out.println(list.get());
 	    list.add(6, "B");
 	    list.add(2, "C");
-	assertEquals(8, list.size());
-	assertEquals("A", list.get(0));
-	assertEquals("C", list.get(2));
-	assertEquals("B", list.get(7));
+	    assertEquals(8, list.size());
+        assertEquals("A", list.get(0));
+        assertEquals("C", list.get(2));
+        assertEquals("B", list.get(7));
 	    assertEquals("[A, First, C, Second, Third, Fourth, Fifth, B]",
     	list.toString());
 	}
-	//
-	// @Test(expected = IndexOutOfBoundsException.class)
-	// public void testAddIndexBelowZero() {
-	// list.add(-1, "ABC");
-	// }
-	//
-	// @Test(expected = IndexOutOfBoundsException.class)
-	// public void testAddIndexAboveMax() {
-	// list.add(6, "ABC");
-	// }
-	//
-	// @Test
-	// public void testClear() {
-	// list.clear();
-	// assertEquals(0, list.size());
-	// list.add("First");
-	// list.add(0, "Second");
-	// assertEquals(2, list.size());
-	// assertEquals("First", list.get(1));
-	// assertEquals("Second", list.get(0));
-	// }
-	//
-	// @Test
-	// public void testContains() {
-	// assertTrue(list.contains("First"));
-	// assertTrue(list.contains("Third"));
-	// assertFalse(list.contains("ABC"));
-	// assertFalse(list.contains(""));
-	// }
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testAddIndexBelowZero() {
+	    list.add(-1, "ABC");
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testAddIndexAboveMax() {
+	    list.add(6, "ABC");
+	}
+
+	@Test
+	public void testClear() {
+        list.clear();
+        assertEquals(0, list.size());
+        list.add("First");
+        list.add(0, "Second");
+        assertEquals(2, list.size());
+        assertEquals("First", list.get(1));
+        assertEquals("Second", list.get(0));
+	}
+
+	@Test
+	public void testContains() {
+	    assertTrue(list.contains("First"));
+	    assertTrue(list.contains("Third"));
+	    assertFalse(list.contains("ABC"));
+	    assertFalse(list.contains(""));
+	}
 	//
 	// @Test
 	// public void testIndexOf() {
