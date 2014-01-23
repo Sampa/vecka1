@@ -17,7 +17,7 @@ public interface ALDAList<E> extends Iterable<E> {
 
 	public E remove(int index);
 
-//	public boolean remove(E element);
+	public boolean remove(E element);
 
 	public E get(int index);
 

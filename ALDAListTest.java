@@ -162,47 +162,47 @@ public class ALDAListTest {
         assertEquals("Fourth", list.get(1));
     }
 
-	// @Test(expected = IndexOutOfBoundsException.class)
-	// public void testRemoveIndexBelowZero() {
-	// list.remove(-1);
-	// }
-	//
-	// @Test(expected = IndexOutOfBoundsException.class)
-	// public void testRemoveIndexAboveMax() {
-	// list.remove(5);
-	// }
-	//
-	// @Test
-	// public void testRemoveObject() {
-	// assertTrue(list.remove("Third"));
-	// assertEquals("Second", list.get(1));
-	// assertEquals("Fourth", list.get(2));
-	//
-	// list.remove("First");
-	// assertEquals(3, list.size());
-	// assertEquals("Second", list.get(0));
-	//
-	// list.remove("Fifth");
-	// assertEquals(2, list.size());
-	// assertEquals("Fourth", list.get(1));
-	//
-	// list.remove("ABC");
-	// assertEquals(2, list.size());
-	// assertEquals("Second", list.get(0));
-	// assertEquals("Fourth", list.get(1));
-	// }
-	//
-	// private static final java.util.Random rnd = new java.util.Random();
-	// private static final String[] names = { "Adam", "Bertil", "Cesar",
-	// "David",
-	// "Erik", "Filip", "Gustav", "Helge", "Ivar", "Johan", "Kalle",
-	// "ludvig", "Martin", "Niklas" };
-	//
-	// private String randomName() {
-	// return names[rnd.nextInt(names.length)];
-	// }
-	//
-	// @Test
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testRemoveIndexBelowZero() {
+	    list.remove(-1);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void testRemoveIndexAboveMax() {
+	    list.remove(5);
+	}
+
+	@Test
+    public void testRemoveObject() {
+        assertTrue(list.remove("Third"));
+        assertEquals("Second", list.get(1));
+        assertEquals("Fourth", list.get(2));
+
+        list.remove("First");
+        assertEquals(3, list.size());
+        assertEquals("Second", list.get(0));
+
+        list.remove("Fifth");
+        assertEquals(2, list.size());
+        assertEquals("Fourth", list.get(1));
+
+        list.remove("ABC");
+        assertEquals(2, list.size());
+        assertEquals("Second", list.get(0));
+        assertEquals("Fourth", list.get(1));
+	}
+
+	private static final java.util.Random rnd = new java.util.Random();
+	private static final String[] names = { "Adam", "Bertil", "Cesar",
+	"David",
+	"Erik", "Filip", "Gustav", "Helge", "Ivar", "Johan", "Kalle",
+	"ludvig", "Martin", "Niklas" };
+
+	private String randomName() {
+    	return names[rnd.nextInt(names.length)];
+	}
+
+//	@Test
 	// public void testMix() {
 	// list.clear();
 	// java.util.List<String> oracle = new java.util.ArrayList<String>();
