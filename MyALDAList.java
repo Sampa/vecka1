@@ -4,13 +4,16 @@ import java.util.NoSuchElementException;
 
 /**
  * Created by Daniel van den Berg and Eleni Kiriakou on 2014-01-21.
- *Starten �r direkt kopierad fr�n f�rel�sning ett (first,last,add metoden och den inre node klassen.
+   den inre node klassen är från föreläsningsbilder
+   Iteratorklassen har vi tittat på i boken för att kunna lösa,och av naturliga skäl blir den väldigt lik
+   Vi upptäckte att både ha first+last och lead+end troligtvis är overkill för en enkelriktad lista men då var vi istortsett klara
+   och byggt vår kod utifrån att ha 4 objekt. Dåligt för minnesförbrukningen..
  */
 public class MyALDAList<T> implements ALDAList<T> {
     private Node<T> first;
     private Node<T> last;
-    private Node<T> lead;
-    private Node<T> end;
+    final private Node<T> lead = new Node<T>(null);
+    final private Node<T> end = new Node<T>(null);
     private int size;
     private int modCount=0;
 
@@ -19,14 +22,14 @@ public class MyALDAList<T> implements ALDAList<T> {
         setToDefaultMode();
     }
     private void setToDefaultMode(){
-        lead = new Node<T>(null);
-        end = new Node<T>(null);
-        lead.next = end;
-        first = lead;
-        last = end;
+        first=  new Node<T>(null);
+        last =  new Node<T>(null);
+        lead.next = first;
+        last.next = end;
         size = 0;
     }
     private boolean isEmpty(){
+        //<1 tar även hand om fall där size (även om det inte borde gå) satts till negativt tal
         if(size<1)
             return true;
         return false;
@@ -40,10 +43,13 @@ public class MyALDAList<T> implements ALDAList<T> {
         //om index �r 0 s� skicka direkt f�rsta noden
         if(index ==0 && !isEmpty())
             return first; //early exit
+        if(index == size-1)
+            return last;
         //iterera tills vi kollat p� INDEX antal element
         Node<T> returnNode = first;
         for(int i=0;i<index;i++){
-            returnNode = returnNode.next;
+            if(returnNode.next !=end)
+                returnNode = returnNode.next;
         }
         return returnNode;
     }
@@ -62,6 +68,7 @@ public class MyALDAList<T> implements ALDAList<T> {
     @Override
     public void add(T element) {
         Node<T> newNode = new Node<T>(element);
+        //pekarna modifieras olika beroende på om det är en tom lista eller inte
         if(isEmpty()){
             lead.next =newNode;
             newNode.next = end;
@@ -95,9 +102,9 @@ public class MyALDAList<T> implements ALDAList<T> {
             //om det inte �r sista addera bara ett komma och space
             if (node != last)
                 str += ", ";
-            else //det �r sista s� avsluta str�ngen
-                str += "]";
+
         }
+        str += "]";
         return str;
     }
 
@@ -110,25 +117,24 @@ public class MyALDAList<T> implements ALDAList<T> {
             if(isEmpty()){
                 //om det �r tomt g�r vi vanlig add
                 add(element);
+                //om vi returnerar här slipper vi garanterat dubbla size++
+                return;
             }else{
-                //korrigera pekarna
+                //korrigera pekarna eftersom vi lägger till på första platsen
                 create.next = lead.next;
                 lead.next = create;
                 first = create;
             }
-            //obvious
-            size++;
-            modCount++;
-            return;
+        }else{
+            //h�mta noden som �r innan det index d�r vi vill s�tta in v�r nod
+            Node<T> current = getNode(index-1);
+            //om det �r den sista vi h�mtat modifiera last pekaren
+            if(current.next==end)
+                last = create;
+            //vanliga modiferare
+            create.next = current.next;
+            current.next = create;
         }
-        //h�mta noden som �r innan det index d�r vi vill s�tta in v�r nod
-        Node<T> current = getNode(index-1);
-        //om det �r den sista vi h�mtat modifiera last pekaren
-        if(current.next==end)
-            last = create;
-        //vanliga modiferare
-        create.next = current.next;
-        current.next = create;
         size++;
         modCount++;
     }
@@ -149,8 +155,7 @@ public class MyALDAList<T> implements ALDAList<T> {
     public boolean contains(T element) {
         for (int i = 0; i < size ; i++) {
             T current = get(i);
-            //dubbelkoll f�r att om m�jligt slippa dyrare equals metod
-            if(current == element || current.equals(element))
+            if(current.equals(element))
                 return true;//hittade elementet s� skippa resten av iterationen
         }
         return false;
@@ -160,7 +165,6 @@ public class MyALDAList<T> implements ALDAList<T> {
     public int indexOf(T element) {
         for (int i = 0; i < size; i++) {
             T current = get(i);
-
             if(current.equals(element))
                 return i;
         }
@@ -172,40 +176,35 @@ public class MyALDAList<T> implements ALDAList<T> {
     public T remove(int index) {
         //den  vi ska ta bort
         Node<T> remove = getNode(index);
-        //h�mta det borttagna objektet
-        T data = (T) remove.data;
-        //fall med index ==0
+        //korrigera pekarna om det är första
         if (index == 0) {
-            //korrigera pekarna
             first = remove.next;
             lead.next = first;
-
         }else{
-            //h�mta den innan
-            Node<T> before= getNode(index-1);
-            //fyll h�lrummet, t.ex index om (int index) som skickas med �r == 5 pekar node 4 nu p� 6 ist�llet
-            before.next = remove.next;
-            //det borttagna ska inte peka n�gonstans
-            remove.next = null;
+            //vi behöver hämta den innan
+            Node<T> before=getNode(index-1);
+            //om vi tar bort sista elementet dirrigera slutpekaren
+            if(index== size-1){
+                before.next = end;
+                last = before;
+            }else{
+               //fyll tomrummet
+                before.next = remove.next;
+            }
         }
         size--;
         modCount ++;
-
+        //h�mta det borttagna objektets data
+        T data = (T) remove.data;
         return data;
     }
 
     @Override
     public boolean remove(T element) {
-        //h�mta index s� vi kan re-usa v�r remove(int) metod
-        System.out.println(element);
+        //h�mta index s� vi kan återanvända v�r remove(int) metod
         int index = indexOf(element);
-
-        //om elementet inte fanns �r index -1 s� returnera false
-        // throw new NoSuchElementException(); k�nns som rimligare
-        // men litar p� att testet vill ha boolean j�mt av en anledning
         if(index < 0)
             return false;
-
         try{
             remove(index);
         }catch (Exception e){
@@ -213,13 +212,8 @@ public class MyALDAList<T> implements ALDAList<T> {
             //dvs n�got ok�nt testfall sket sig
             return false;
         }
-        //no problemas si senior
-
         return true;
     }
-
-
-
     //Inre nod klassen kopierad fr�n f�rel�sning
     private static class Node<T>{
         T data;
@@ -229,97 +223,79 @@ public class MyALDAList<T> implements ALDAList<T> {
         }
     }
 
-//backupkod vi raderat men kanske uppt�cker att vi beh�ver senare
-/*
-        if(index > 0 && checkAddIndexBounds(index-1)){
-            Node before = getNode(index-1);
-            create.next = before.next;
-            before.next = create;
-        }else{
-            throw new IndexOutOfBoundsException();
-        }*/
-/*
-        if(index >=0 && index <= size+1){
-            // om index �r 0 ska vi ha f�rsta ej h�mta negativt item
-
-            Node returnedNode = null;
-            if(index ==0){
-                returnedNode = lead;
-            }else{
-                returnedNode = getNode(index);
-            }
-            Node newNode = new Node(element);
-            returnedNode.next = newNode;
-            newNode.next = returnedNode.next;
-
-            //om vi m�ste redigera v�ra first och last pekare
-
-            if(returnedNode == last){
-//                returnedNode.next = newNode;
-                last = newNode;
-            }else if(index == 0){
-                lead.next = newNode;
-//                newNode.next = first;
-                first = newNode;
-            }
-            size++;
-        }*/
-
     @Override
     public Iterator<T> iterator() {
         return new ALDAListIterator();
     }
     private class ALDAListIterator implements Iterator<T>{
         /*
-        * Aautogenererade skalmetoder och engelska kommentarer fr�n javadoc via editorn
-        * Koden i metodernas body och p� svenska �r v�rt eget
+        * Naturligtvis väääldigt "inspirerat" av boken.
+        *
         */
+        //börja alltid på första
         private Node<T> current=first;
         private int expectedModCount = modCount;
+        //false tills next() metoden kontrollerat att ett objekt kan tas bort
         public boolean okToRemove= false;
-
-
+        /*
+            Kollar om listan har ytterligare ett element
+         */
         public boolean hasNext(){
+            //försöker iterera på en tom lista, go home nervsystem
             if(isEmpty())
                 throw new NoSuchElementException();
-
+            /*
+                current !=end kommer vara true tills vi nått slutet på listan (noden end)
+            */
             return current!=end;
         }
 
         public T next(){
-
+            /*
+                Kontrollerar att vi inte försöker modifiera/iterera samma lista från fler än en tråd samtidigt
+            */
             if(modCount!= expectedModCount)
                 throw new ConcurrentModificationException();
-
-
+            /*
+                För att vi inte ska försöka leta reda på data som inte finns
+             */
             if(!hasNext())
                 throw new NoSuchElementException();
-
+            /*
+              Nu kan vi gå till nästa nod, och eftersom felscenariona ovan inte inträffade
+              är det även ok att ta bort ett element
+             */
             T nextData =  current.data;
             current= current.next;
             okToRemove= true;
             return nextData;
-
-
         }
+
         public void remove(){
+             /*
+                Kontrollerar att vi inte försöker modifiera/iterera samma lista från fler än en tråd samtidigt
+            */
             if(modCount!= expectedModCount)
                 throw new ConcurrentModificationException();
+             /*
+              Om inte next() körts lyckosamt
+            */
             if (!okToRemove)
                 throw new IllegalStateException();
 
-            int idx= MyALDAList.this.indexOf(current.data);
-            if (idx < 0){
+            //hämta indexet av elementet i listan
+            int currentIndex= indexOf(current.data);
+            if (currentIndex < 0){
                 MyALDAList.this.remove(last.data);
             }else{
-                MyALDAList.this.remove(idx -1);
+                MyALDAList.this.remove(currentIndex-1);
             }
-            expectedModCount ++;
+            //öka antalet gånger tråden som itererar på listan körts
+            expectedModCount++;
+            //måste återställas nu när vi tagit bort ett element ifall remove skulle köras senare igen
             okToRemove=false;
         }
-
     }
-
 }
 
 	

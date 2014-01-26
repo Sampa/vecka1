@@ -1,7 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 import org.junit.Before;
+import org.junit.ComparisonFailure;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -146,22 +146,39 @@ public void testIndexOf() {
     assertEquals(1, list.indexOf("Second"));
 }
 
+
+//@Test
+//public void testRemoveWithIndex() {
+//    list.remove(2);
+//    assertEquals(4, list.size());
+//    assertEquals("Second", list.get(1));
+//    assertEquals("Fourth", list.get(2));
+//
+//    list.remove(0);
+//    assertEquals(3, list.size());
+//    assertEquals("Second", list.get(0));
+//
+//    list.remove(2);
+//    assertEquals(2, list.size());
+//    assertEquals("Fourth", list.get(1));
+//}
+// Uppdaterad version som kontrollerar att rätt objekt returneras
+
 @Test
 public void testRemoveWithIndex() {
-    list.remove(2);
+    assertEquals("Third", list.remove(2));
     assertEquals(4, list.size());
     assertEquals("Second", list.get(1));
     assertEquals("Fourth", list.get(2));
 
-    list.remove(0);
+    assertEquals("First", list.remove(0));
     assertEquals(3, list.size());
     assertEquals("Second", list.get(0));
 
-    list.remove(2);
+    assertEquals("Fifth", list.remove(2));
     assertEquals(2, list.size());
     assertEquals("Fourth", list.get(1));
 }
-
 @Test(expected = IndexOutOfBoundsException.class)
 public void testRemoveIndexBelowZero() {
     list.remove(-1);
@@ -206,96 +223,101 @@ private String randomName() {
 public void testMix() {
 list.clear();
 java.util.List<String> oracle = new java.util.ArrayList<String>();
- assertEquals(0, list.size());
 
-//
-//for (int n = 0; n < 1000; n++) {
-//String name = randomName();
-//
-//// G�r en slumpm�ssig ins�ttning
-//switch (rnd.nextInt(5)) {
-//case 0:
-//list.add(name);
-//oracle.add(name);
-//break;
-//case 1:
-//list.add(0, name);
-//oracle.add(0, name);
-//break;
-//case 2:
-//list.add(list.size(), name);
-//oracle.add(oracle.size(), name);
-//break;
-//case 3:
-//case 4:
-//int index = list.size() == 0 ? 0 : rnd.nextInt(list.size());
-//list.add(index, name);
-//oracle.add(index, name);
-//break;
-//}
-//
-//if (oracle.size() > 0) {
-//
-//// G�r ett slumpm�ssigt borttag i 70% av fallen
-//switch (rnd.nextInt(10)) {
-//case 3:
-//list.remove(0);
-//oracle.remove(0);
-//break;
-//case 4:
-//list.remove(list.size() - 1);
-//oracle.remove(oracle.size() - 1);
-//break;
-//case 5:
-//case 6:
-//int index = rnd.nextInt(list.size());
-//list.remove(index);
-//oracle.remove(index);
-//break;
-//case 7:
-//case 8:
-//name = randomName();
-//list.remove(name);
-//oracle.remove(name);
-//break;
-//case 9:
-//if (rnd.nextInt(10) < 2) {
-//list.clear();
-//oracle.clear();
-//}
-//}
-//}
-//
-//if (oracle.size() == 0) {
-//    assertEquals(0, list.size());
-//} else {
-//// G�r en slumpm�ssig kontroll
-//switch (rnd.nextInt(10)) {
-//case 0:
-//assertEquals(oracle.size(), list.size());
-//break;
-//case 1:
-//assertEquals(oracle.get(0), list.get(0));
-//break;
-//case 2:
-//assertEquals(oracle.get(oracle.size() - 1),
-//list.get(list.size() - 1));
-//break;
-//case 3:
-//case 4:
-//case 5:
-//case 6:
-//case 7:
-//case 8:
-//int index = rnd.nextInt(list.size());
-//assertEquals(oracle.get(index), list.get(index));
-//break;
-//case 9:
-//assertEquals(oracle.toString(), list.toString());
-//break;
-//}
-//}
-//}
+for (int n = 0; n < 1000; n++) {
+String name = randomName();
+// G�r en slumpm�ssig ins�ttning
+switch (rnd.nextInt(5)) {
+    case 0:
+    list.add(name);
+    oracle.add(name);
+    break;
+    case 1:
+    list.add(0, name);
+    oracle.add(0, name);
+    break;
+    case 2:
+         list.add(list.size(), name);
+        oracle.add(oracle.size(), name);
+        assertEquals(oracle.size(), list.size());
+        break;
+    case 3:
+    case 4:
+    int index = list.size() == 0 ? 0 : rnd.nextInt(list.size());
+    list.add(index, name);
+    oracle.add(index, name);
+    break;
+}
+
+if (oracle.size() > 0) {
+
+// G�r ett slumpm�ssigt borttag i 70% av fallen
+switch (rnd.nextInt(10)) {
+case 3:
+list.remove(0);
+oracle.remove(0);
+    break;
+case 4:
+list.remove(list.size() - 1);
+oracle.remove(oracle.size() - 1);
+
+    break;
+case 5:
+case 6:
+int index = rnd.nextInt(list.size());
+list.remove(index);
+oracle.remove(index);
+
+    break;
+case 7:
+case 8:
+    name = randomName();
+    try{
+    list.remove(name);
+        oracle.remove(name);
+    }catch(NullPointerException npe){
+        System.out.println(name);
+    }
+    break;
+case 9:
+if (rnd.nextInt(10) < 2) {
+list.clear();
+oracle.clear();
+}
+}
+}
+
+if (oracle.size() == 0) {
+    assertEquals(0, list.size());
+} else {
+// G�r en slumpm�ssig kontroll
+switch (rnd.nextInt(10)) {
+case 0:
+assertEquals(oracle.size(), list.size());
+break;
+case 1:
+assertEquals(oracle.get(0), list.get(0));
+break;
+case 2:
+    assertEquals(oracle.get(oracle.size() - 1),
+    list.get(list.size() - 1));
+
+    break;
+case 3:
+case 4:
+case 5:
+case 6:
+case 7:
+case 8:
+int index = rnd.nextInt(list.size());
+assertEquals(oracle.get(index), list.get(index));
+break;
+case 9:
+assertEquals(oracle.toString(), list.toString());
+break;
+}
+}
+    }
 
 }
 
@@ -390,5 +412,66 @@ i.next();
 i.remove();
 i.remove();
 }
+
+
+    // Nytt test som speciellt kontrollerar borttag i slutet av listan, ett vanligt problem
+    @Test
+    public void testRemoveAtEnd() {
+        list.remove(4);
+        assertEquals(4, list.size());
+        list.remove(3);
+        assertEquals(3, list.size());
+        assertEquals("[First, Second, Third]", list.toString());
+
+        list.add("A");
+        assertEquals(4, list.size());
+        assertEquals("[First, Second, Third, A]", list.toString());
+        list.add("B");
+        assertEquals(5, list.size());
+        assertEquals("[First, Second, Third, A, B]", list.toString());
+
+        list.remove(4);
+        assertEquals(4, list.size());
+        list.remove(3);
+        assertEquals(3, list.size());
+        assertEquals("[First, Second, Third]", list.toString());
+
+        list.add(3, "A");
+        assertEquals(4, list.size());
+        assertEquals("[First, Second, Third, A]", list.toString());
+        list.add(4, "B");
+        assertEquals(5, list.size());
+        assertEquals("[First, Second, Third, A, B]", list.toString());
+    }
+
+    // Nytt test som kontrollerar borttag av dubletter i listan
+    @Test
+    public void testRemoveDuplicates() {
+        list.add("First");
+        list.add("Third");
+        list.add("Fifth");
+        assertEquals(
+                "[First, Second, Third, Fourth, Fifth, First, Third, Fifth]",
+                list.toString());
+
+        list.remove("Third");
+        assertEquals("[First, Second, Fourth, Fifth, First, Third, Fifth]",
+                list.toString());
+        list.remove("Third");
+        assertEquals("[First, Second, Fourth, Fifth, First, Fifth]",
+                list.toString());
+        list.remove("First");
+        assertEquals("[Second, Fourth, Fifth, First, Fifth]", list.toString());
+        list.remove("Second");
+        assertEquals("[Fourth, Fifth, First, Fifth]", list.toString());
+        list.remove("Fifth");
+        assertEquals("[Fourth, First, Fifth]", list.toString());
+        list.remove("Fifth");
+        assertEquals("[Fourth, First]", list.toString());
+
+        list.add(0, "A");
+        list.add("B");
+        assertEquals("[A, Fourth, First, B]", list.toString());
+    }
 
 }
