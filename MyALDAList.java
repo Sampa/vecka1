@@ -1,19 +1,21 @@
+/**
+ * Daniel van den Berg (dava4507@dsv.su.se)
+ * Eleni Kiriakou (elki8004@dsv.su.se)
+ * Den inre node klassen är från föreläsningsbilder
+ * Iteratorklassen har vi tittat på i boken för att kunna lösa,och av naturliga skäl blir den väldigt lik
+ * Vi upptäckte när vi var klara att ha både first+last och lead+end troligtvis var onödigt för en enkelläktad lista
+ * Men vi ville inte riskera att komma på motsatsen halvvägs. Med lite mer tid hade vi valt att försöka skriva om klassen
+ * och även utforska möjligheterna för att optimera varje operation tidsmässigt.
+ */
+//autohandled by IntelliJ
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-/**
- * Created by Daniel van den Berg and Eleni Kiriakou on 2014-01-21.
-   den inre node klassen är från föreläsningsbilder
-   Iteratorklassen har vi tittat på i boken för att kunna lösa,och av naturliga skäl blir den väldigt lik
-   Vi upptäckte att både ha first+last och lead+end troligtvis är overkill för en enkelriktad lista men då var vi istortsett klara
-   och byggt vår kod utifrån att ha 4 objekt. Dåligt för minnesförbrukningen..
- */
 public class MyALDAList<T> implements ALDAList<T> {
     private Node<T> first;
     private Node<T> last;
-    final private Node<T> lead = new Node<T>(null);
-    final private Node<T> end = new Node<T>(null);
+    final private Node<T> lead = new Node<>(null);
+    final private Node<T> end = new Node<>(null);
     private int size;
     private int modCount=0;
 
@@ -22,18 +24,14 @@ public class MyALDAList<T> implements ALDAList<T> {
         setToDefaultMode();
     }
     private void setToDefaultMode(){
-        first=  new Node<T>(null);
-        last =  new Node<T>(null);
+        first=  new Node<>(null);
+        last =  new Node<>(null);
         lead.next = first;
         last.next = end;
         size = 0;
     }
     private boolean isEmpty(){
-        //<1 tar även hand om fall där size (även om det inte borde gå) satts till negativt tal
-        if(size<1)
-            return true;
-        return false;
-
+        return size == 0;
     }
     private Node<T> getNode(int index){
         //f�r inte vara st�rre �n antalet element, negativ eller om first = v�r lead objekt s� �r listan tom
@@ -61,13 +59,12 @@ public class MyALDAList<T> implements ALDAList<T> {
             throw new IndexOutOfBoundsException();
         Node<T> returnNode = getNode(index);
         //det �r ju inte noden utan dess data vi vill returnera
-        T data = (T) returnNode.data;
-        return data;
+        return returnNode.data;
     }
 
     @Override
     public void add(T element) {
-        Node<T> newNode = new Node<T>(element);
+        Node<T> newNode = new Node<>(element);
         //pekarna modifieras olika beroende på om det är en tom lista eller inte
         if(isEmpty()){
             lead.next =newNode;
@@ -83,9 +80,7 @@ public class MyALDAList<T> implements ALDAList<T> {
         modCount++;
     }
     private boolean checkIndexOk(int index) {
-        if(index >= 0 && index < size)
-            return true;
-        return false;
+        return index >= 0 && index < size;
     }
     @Override
     public String toString() {
@@ -96,7 +91,7 @@ public class MyALDAList<T> implements ALDAList<T> {
         String str = "[";
         //alla noderna, tills vi st�ter p� end
         for(Node<T> node = first; node !=end;node=node.next ) {
-            T data = (T) node.data;
+            T data = node.data;
             //addera elementets tostring till v�r str
             str +=  data.toString();
             //om det inte �r sista addera bara ett komma och space
@@ -111,7 +106,7 @@ public class MyALDAList<T> implements ALDAList<T> {
     @Override
     public void add(int index, T element) {
         //Ny nod
-        Node<T> create = new Node<T>(element);
+        Node<T> create = new Node<>(element);
         //fall med index ==0
         if (index == 0) {
             if(isEmpty()){
@@ -195,8 +190,7 @@ public class MyALDAList<T> implements ALDAList<T> {
         size--;
         modCount ++;
         //h�mta det borttagna objektets data
-        T data = (T) remove.data;
-        return data;
+        return remove.data;
     }
 
     @Override
@@ -298,4 +292,3 @@ public class MyALDAList<T> implements ALDAList<T> {
     }
 }
 
-	
